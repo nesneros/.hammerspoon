@@ -1,8 +1,12 @@
-hs.loadSpoon("SpoonInstall")
+local logger = hs.logger.new('MyApp', 'debug')
 
--- For VSCode extension
-spoon.SpoonInstall:andUse("EmmyLua", {})
-spoon.SpoonInstall:andUse("RecursiveBinder", {})
+hs.loadSpoon("SpoonInstall")
+Install = spoon.SpoonInstall
+Install.use_syncinstall = true
+
+Install:andUse("EmmyLua", {})
+Install:andUse("KSheet", {})
+Install:andUse("RecursiveBinder", {})
 
 spoon.RecursiveBinder.escapeKey = { {}, 'escape' } -- Press escape to abort
 
@@ -11,6 +15,7 @@ local singleKey = spoon.RecursiveBinder.singleKey
 local keyMap = {
     [singleKey('b', 'browser')] = function() hs.application.launchOrFocus("Arc") end,
     [singleKey('t', 'kitty')] = function() hs.application.launchOrFocus("Kitty") end,
+    [singleKey('s', 'keybindings')] = function() spoon.KSheet:toggle() end,
     [singleKey('h', 'hammerspoon+')] = {
         [singleKey('h', 'reload config')] = function() hs.reload() end,
         [singleKey('c', 'toggle console')] = function() hs.toggleConsole() end
@@ -40,6 +45,96 @@ local function activate_app_and_send_key(app_name, mods, key)
 end
 
 hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "T", function()
+    -- hs.hotkey.bind({ "cmd" }, "tab", function()
     activate_app_and_send_key("Arc", { "cmd" }, "t")
 end)
 
+
+local function caffeinate(on)
+    -- hs.caffeinate.
+end
+
+----------------------------------------------------------------------------------------------------
+--- Window management
+
+local function detect_screens(primary_required, secondary_required)
+    for k, v in pairs(hs.screen.allScreens()) do
+        x, y = v:position()
+        name = v:name()
+        local laptop, primary, secondary = nil, nil, nil
+        logger.df("Screen %s: %s", k, name)
+        if name == "Built-in Retina Display" then
+            logger.df("Laptop screen: %s", name)
+            laptop = v
+        elseif x == 1 then
+            logger.df("Primary screen: %s", name)
+            primary = v
+        elseif x == 2 then
+            logger.df("Secondary screen: %s", name)
+            secondary = v
+        else
+            logger.ef("Unknown screen: %s", name)
+        end
+    end
+
+    if laptop == nil then
+        hs.alert.show("Laptop screen not found")
+        return
+    end
+
+    if primary_required and primary == nil then
+        hs.alert.show("Primary screen not found")
+        return
+    end
+    if secondary_required and secondary == nil then
+        hs.alert.show("Secondary screen not found")
+        return
+    end
+    return laptop, primary, secondary
+end
+
+local function work_layout()
+    laptop, primary, secondary = detect_screens(true, true)
+
+    if laptop == nil then
+        return
+    end
+end
+
+local function home_layout()
+    local laptop, primary, secondary = detect_screens(true, false)
+
+    if laptop == nil then
+        return
+    end
+end
+
+local function home_work_layout()
+    local laptop, primary, secondary = detect_screens(true, false)
+
+    if laptop == nil then
+        return
+    end
+end
+
+----------------------------------------------------------------------------------------------------
+--- Menubar
+local menubar = hs.menubar.new(true, "myhammerspoonmenubar")
+menubar:setIcon(hs.image.imageFromName("NSHandCursor"))
+
+if menubar then
+    menubar:setMenu({
+        { title = "Sleep",            fn = function() hs.caffeinate.systemSleep() end },
+        {
+            title = "Caffeinate",
+            checked = true,
+            fn = function()
+                hs.reload()
+            end
+        },
+        { title = "-" },
+        { title = "Work Layout",      fn = work_layout },
+        { title = "Home Work Layout", fn = home_work_layout, },
+        { title = "Home Layout",      fn = home_layout, },
+    })
+end
