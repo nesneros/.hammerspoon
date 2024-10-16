@@ -9,17 +9,15 @@ Install:andUse("KSheet", {})
 Install:andUse("RecursiveBinder", {})
 
 spoon.RecursiveBinder.escapeKey = { {}, 'escape' } -- Press escape to abort
-
+spoon.RecursiveBinder.helperEntryEachLine = 4
+spoon.RecursiveBinder.helperEntryLengthInChar = 30
 local singleKey = spoon.RecursiveBinder.singleKey
 
 local keyMap = {
     [singleKey('b', 'browser')] = function() hs.application.launchOrFocus("Arc") end,
     [singleKey('t', 'kitty')] = function() hs.application.launchOrFocus("Kitty") end,
     [singleKey('s', 'keybindings')] = function() spoon.KSheet:toggle() end,
-    [singleKey('h', 'hammerspoon+')] = {
-        [singleKey('h', 'reload config')] = function() hs.reload() end,
-        [singleKey('c', 'toggle console')] = function() hs.toggleConsole() end
-    },
+    [singleKey('h', 'HS console & reload')] = function() hs.toggleConsole() ; hs.reload()  end,
     [singleKey('f', 'finder+')] = {
         [singleKey('h', 'home')] = function() hs.execute("open ~") end,
         [singleKey('d', 'Documents')] = function() hs.execute("open ~/Documents") end
@@ -30,6 +28,7 @@ hs.hotkey.bind({ 'alt' }, 'space', spoon.RecursiveBinder.recursiveBind(keyMap))
 ----------------------------------------------------------------------------------------------------
 -- paste by emitting fake kweyboard events. This is a workaround for pasting to (password) fields that blocks pasting.
 hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "V", function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end)
+-- hs.hotkey.bind({ "cmd"}, "space", function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end)
 
 ----------------------------------------------------------------------------------------------------
 --- Global hotkeys
@@ -59,8 +58,7 @@ end
 
 local function detect_screens(primary_required, secondary_required)
     for k, v in pairs(hs.screen.allScreens()) do
-        x, y = v:position()
-        name = v:name()
+        local name = v:name()
         local laptop, primary, secondary = nil, nil, nil
         logger.df("Screen %s: %s", k, name)
         if name == "Built-in Retina Display" then
