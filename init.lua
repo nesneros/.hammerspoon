@@ -66,10 +66,10 @@ local function detect_screens(primary_required, secondary_required)
         if name == "Built-in Retina Display" then
             logger.df("Laptop screen: %s", name)
             laptop = v
-        elseif x == 1 then
+        elseif name == "DELL U2720Q (1)" then
             logger.df("Primary screen: %s", name)
             primary = v
-        elseif x == 2 then
+        elseif name == "DELL U2720Q (2)" then
             logger.df("Secondary screen: %s", name)
             secondary = v
         else
