@@ -13,11 +13,15 @@ spoon.RecursiveBinder.helperEntryEachLine = 4
 spoon.RecursiveBinder.helperEntryLengthInChar = 30
 local singleKey = spoon.RecursiveBinder.singleKey
 
+logger.i(hs.keycodes.currentLayout())
+
 local keyMap = {
     [singleKey('b', 'browser')] = function() hs.application.launchOrFocus("Arc") end,
     [singleKey('t', 'kitty')] = function() hs.application.launchOrFocus("Kitty") end,
     [singleKey('s', 'keybindings')] = function() spoon.KSheet:toggle() end,
-    [singleKey('h', 'HS console & reload')] = function() hs.toggleConsole() ; hs.reload()  end,
+    [singleKey('h', 'HS console & reload')] = function()
+        hs.toggleConsole(); hs.reload()
+    end,
     [singleKey('f', 'finder+')] = {
         [singleKey('h', 'home')] = function() hs.execute("open ~") end,
         [singleKey('d', 'Documents')] = function() hs.execute("open ~/Documents") end
@@ -28,7 +32,6 @@ hs.hotkey.bind({ 'alt' }, 'space', spoon.RecursiveBinder.recursiveBind(keyMap))
 ----------------------------------------------------------------------------------------------------
 -- paste by emitting fake kweyboard events. This is a workaround for pasting to (password) fields that blocks pasting.
 hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "V", function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end)
--- hs.hotkey.bind({ "cmd"}, "space", function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end)
 
 ----------------------------------------------------------------------------------------------------
 --- Global hotkeys
@@ -54,12 +57,29 @@ local function caffeinate(on)
 end
 
 ----------------------------------------------------------------------------------------------------
+--- Keyboard layouts
+hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "I", function()
+    local allLayouts = { 'U.S.', 'Danish' }
+
+    local currentLayout = hs.keycodes.currentLayout()
+    local newIndex = 1
+    for i = 1, #allLayouts - 1 do
+        if allLayouts[i] == currentLayout then
+            newIndex = i + 1
+            break
+        end
+    end
+    hs.keycodes.setLayout(allLayouts[newIndex])
+end)
+
+
+----------------------------------------------------------------------------------------------------
 --- Window management
 
 local function detect_screens(primary_required, secondary_required)
+    local laptop, primary, secondary = nil, nil, nil
     for k, v in pairs(hs.screen.allScreens()) do
         local name = v:name()
-        local laptop, primary, secondary = nil, nil, nil
         logger.df("Screen %s: %s", k, name)
         if name == "Built-in Retina Display" then
             logger.df("Laptop screen: %s", name)
@@ -92,7 +112,7 @@ local function detect_screens(primary_required, secondary_required)
 end
 
 local function work_layout()
-    laptop, primary, secondary = detect_screens(true, true)
+    local laptop, primary, secondary = detect_screens(true, true)
 
     if laptop == nil then
         return
@@ -118,9 +138,8 @@ end
 ----------------------------------------------------------------------------------------------------
 --- Menubar
 local menubar = hs.menubar.new(true, "myhammerspoonmenubar")
-menubar:setIcon(hs.image.imageFromName("NSHandCursor"))
-
 if menubar then
+    menubar:setIcon(hs.image.imageFromName("NSHandCursor"))
     menubar:setMenu({
         { title = "Sleep",            fn = function() hs.caffeinate.systemSleep() end },
         {
