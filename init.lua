@@ -8,12 +8,20 @@ Install:andUse("EmmyLua", {})
 Install:andUse("KSheet", {})
 Install:andUse("RecursiveBinder", {})
 
-spoon.RecursiveBinder.escapeKey = { {}, 'escape' } -- Press escape to abort
 spoon.RecursiveBinder.helperEntryEachLine = 4
 spoon.RecursiveBinder.helperEntryLengthInChar = 30
 local singleKey = spoon.RecursiveBinder.singleKey
 
-logger.i(hs.keycodes.currentLayout())
+-- Click on modifiers are mapped to fuunctions keys by Karabiner
+local modKey = {
+    left_shift = 'F13',
+    left_alt = 'F16',
+    left_command = 'F17',
+    right_command = 'F18',
+    right_shift = 'F19',
+    both_shift = 'F20',
+}
+    
 
 local keyMap = {
     [singleKey('b', 'browser')] = function() hs.application.launchOrFocus("Arc") end,
@@ -27,10 +35,11 @@ local keyMap = {
         [singleKey('d', 'Documents')] = function() hs.execute("open ~/Documents") end
     }
 }
-hs.hotkey.bind({ 'alt' }, 'space', spoon.RecursiveBinder.recursiveBind(keyMap))
+spoon.RecursiveBinder.escapeKey = { {}, modKey.right_shift } -- Press escape to abort
+hs.hotkey.bind({}, modKey.right_shift, spoon.RecursiveBinder.recursiveBind(keyMap))
 
 ----------------------------------------------------------------------------------------------------
--- paste by emitting fake kweyboard events. This is a workaround for pasting to (password) fields that blocks pasting.
+-- paste by emitting fake keyboard events. This is a workaround for pasting to (password) fields that blocks pasting.
 hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "V", function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end)
 
 ----------------------------------------------------------------------------------------------------
@@ -46,19 +55,15 @@ local function activate_app_and_send_key(app_name, mods, key)
     end
 end
 
-hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "T", function()
-    -- hs.hotkey.bind({ "cmd" }, "tab", function()
+-- Activate cmm-T in Arc
+hs.hotkey.bind({}, modKey.right_command, function()
     activate_app_and_send_key("Arc", { "cmd" }, "t")
 end)
 
 
-local function caffeinate(on)
-    -- hs.caffeinate.
-end
-
 ----------------------------------------------------------------------------------------------------
 --- Keyboard layouts
-hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "I", function()
+hs.hotkey.bind({}, modKey.both_shift, function()
     local allLayouts = { 'U.S.', 'Danish' }
 
     local currentLayout = hs.keycodes.currentLayout()
@@ -75,7 +80,6 @@ end)
 
 ----------------------------------------------------------------------------------------------------
 --- Window management
-
 local function detect_screens(primary_required, secondary_required)
     local laptop, primary, secondary = nil, nil, nil
     for k, v in pairs(hs.screen.allScreens()) do
@@ -84,7 +88,7 @@ local function detect_screens(primary_required, secondary_required)
         if name == "Built-in Retina Display" then
             logger.df("Laptop screen: %s", name)
             laptop = v
-        elseif name == "DELL U2720Q (1)" then
+        elseif name == "DELL U2720Q (1)" or name == "LG HDR 4K" then
             logger.df("Primary screen: %s", name)
             primary = v
         elseif name == "DELL U2720Q (2)" then
@@ -111,6 +115,24 @@ local function detect_screens(primary_required, secondary_required)
     return laptop, primary, secondary
 end
 
+local function screensChanged()
+    logger.df("Screens changed")
+    local laptop, primary, secondary = detect_screens(false, false)
+    if primary ~= nil then
+        if primary:name() == "LG HDR 4K" then
+            logger.df("Location is home")
+        elseif primary:name() == "DELL U2720Q (1)" and secondary ~= nil then
+            logger.df("Location is work")
+        else
+            logger.df("Location is unknown")
+        end
+    end
+end
+
+hs.screen.watcher.new(screensChanged):start()
+screensChanged()
+
+
 local function work_layout()
     local laptop, primary, secondary = detect_screens(true, true)
 
@@ -135,20 +157,16 @@ local function home_work_layout()
     end
 end
 
+
+
 ----------------------------------------------------------------------------------------------------
 --- Menubar
 local menubar = hs.menubar.new(true, "myhammerspoonmenubar")
 if menubar then
     menubar:setIcon(hs.image.imageFromName("NSHandCursor"))
     menubar:setMenu({
+        { title = "Toggle Caps Lock", fn = hs.hid.capslock.toggle },
         { title = "Sleep",            fn = function() hs.caffeinate.systemSleep() end },
-        {
-            title = "Caffeinate",
-            checked = true,
-            fn = function()
-                hs.reload()
-            end
-        },
         { title = "-" },
         { title = "Work Layout",      fn = work_layout },
         { title = "Home Work Layout", fn = home_work_layout, },
