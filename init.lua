@@ -1,4 +1,6 @@
-local logger = hs.logger.new('MyApp', 'debug')
+local logger = hs.logger.new('init.lua', 'debug')
+
+require('hs.ipc')
 
 hs.loadSpoon("SpoonInstall")
 Install = spoon.SpoonInstall
