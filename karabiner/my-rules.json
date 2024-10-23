@@ -1,0 +1,191 @@
+{
+   "rules": [
+      {
+         "description": "left_shift -> f13",
+         "manipulators": [
+            {
+               "from": {
+                  "key_code": "left_shift",
+                  "modifiers": { }
+               },
+               "to": [
+                  {
+                     "key_code": "left_shift"
+                  }
+               ],
+               "to_if_alone": [
+                  {
+                     "key_code": "f13"
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "left_alt -> f16",
+         "manipulators": [
+            {
+               "from": {
+                  "key_code": "left_alt",
+                  "modifiers": { }
+               },
+               "to": [
+                  {
+                     "key_code": "left_alt"
+                  }
+               ],
+               "to_if_alone": [
+                  {
+                     "key_code": "f16"
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "left_command -> f17",
+         "manipulators": [
+            {
+               "from": {
+                  "key_code": "left_command",
+                  "modifiers": { }
+               },
+               "to": [
+                  {
+                     "key_code": "left_command"
+                  }
+               ],
+               "to_if_alone": [
+                  {
+                     "key_code": "f17"
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "right_command -> f18",
+         "manipulators": [
+            {
+               "from": {
+                  "key_code": "right_command",
+                  "modifiers": { }
+               },
+               "to": [
+                  {
+                     "key_code": "right_command"
+                  }
+               ],
+               "to_if_alone": [
+                  {
+                     "key_code": "f18"
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "right_shift -> f19",
+         "manipulators": [
+            {
+               "from": {
+                  "key_code": "right_shift",
+                  "modifiers": { }
+               },
+               "to": [
+                  {
+                     "key_code": "right_shift"
+                  }
+               ],
+               "to_if_alone": [
+                  {
+                     "key_code": "f19"
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "left_shift + right_shift at the same time -> f20",
+         "manipulators": [
+            {
+               "from": {
+                  "key_code": "left_shift",
+                  "modifiers": {
+                     "mandatory": [
+                        "right_shift"
+                     ]
+                  }
+               },
+               "to": [
+                  {
+                     "key_code": "f20"
+                  }
+               ],
+               "to_if_alone": [
+                  {
+                     "key_code": "left_shift"
+                  }
+               ],
+               "type": "basic"
+            },
+            {
+               "from": {
+                  "key_code": "right_shift",
+                  "modifiers": {
+                     "mandatory": [
+                        "left_shift"
+                     ],
+                     "optional": [
+                        "caps_lock"
+                     ]
+                  }
+               },
+               "to": [
+                  {
+                     "key_code": "f20"
+                  }
+               ],
+               "to_if_alone": [
+                  {
+                     "key_code": "right_shift"
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "Change caps_lock to control if pressed with other keys, to escape if pressed alone.",
+         "manipulators": [
+            {
+               "from": {
+                  "key_code": "caps_lock",
+                  "modifiers": {
+                     "optional": [
+                        "any"
+                     ]
+                  }
+               },
+               "to": [
+                  {
+                     "key_code": "left_control"
+                  }
+               ],
+               "to_if_alone": [
+                  {
+                     "key_code": "escape"
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      }
+   ],
+   "title": "Personal"
+}
