@@ -52,7 +52,6 @@ local map_modifier(modifier, to_key) = {
             key_code: 'right_shift',
             modifiers: {
               mandatory: ['left_shift'],
-              optional: ['caps_lock'],
             },
           },
           to: [{ key_code: 'f20' }],
@@ -71,6 +70,25 @@ local map_modifier(modifier, to_key) = {
           },
           to: [{ key_code: 'left_control' }],
           to_if_alone: [{ key_code: 'escape' }],
+          type: 'basic',
+        },
+      ],
+    },
+    {
+      description: 'Change spacebar to hyper, if not pressed with other keys.',
+      manipulators: [
+        {
+          from: {
+            key_code: 'spacebar',
+            modifiers: {},
+          },
+          to: [
+            {
+              key_code: 'left_shift',
+              modifiers: ['left_control', 'left_alt', 'left_command'],
+            },
+          ],
+          to_if_alone: [{ key_code: 'spacebar' }],
           type: 'basic',
         },
       ],
