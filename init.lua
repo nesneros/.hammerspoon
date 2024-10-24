@@ -65,8 +65,8 @@ end)
 
 ----------------------------------------------------------------------------------------------------
 --- Keyboard layouts
-hs.hotkey.bind({}, modKey.both_shift, function()
-    local allLayouts = { 'U.S.', 'Danish' }
+local function rotateKeyboarLayout() 
+    local allLayouts = hs.keycodes.layouts()
 
     local currentLayout = hs.keycodes.currentLayout()
     local newIndex = 1
@@ -77,8 +77,8 @@ hs.hotkey.bind({}, modKey.both_shift, function()
         end
     end
     hs.keycodes.setLayout(allLayouts[newIndex])
-end)
-
+end
+hs.hotkey.bind({}, modKey.both_shift, rotateKeyboarLayout)
 
 ----------------------------------------------------------------------------------------------------
 --- Window management
