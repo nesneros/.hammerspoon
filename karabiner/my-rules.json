@@ -89,16 +89,16 @@
          ]
       },
       {
-         "description": "right_shift -> f19",
+         "description": "right_alt -> f19",
          "manipulators": [
             {
                "from": {
-                  "key_code": "right_shift",
+                  "key_code": "right_alt",
                   "modifiers": { }
                },
                "to": [
                   {
-                     "key_code": "right_shift"
+                     "key_code": "right_alt"
                   }
                ],
                "to_if_alone": [

@@ -32,9 +32,9 @@ local map_modifier(modifier, to_key) = {
     map_modifier('left_alt', 'f16'),
     map_modifier('left_command', 'f17'),
     map_modifier('right_command', 'f18'),
-    // map_modifier('right_alt', 'f19'),
+    map_modifier('right_alt', 'f19'),
     // map_modifier('right_control', 'f19'),
-    map_modifier('right_shift', 'f19'),
+    // map_modifier('right_shift', 'f19'),
     {
       description: 'left_shift + right_shift at the same time -> f20',
       manipulators: [

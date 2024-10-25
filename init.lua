@@ -20,7 +20,7 @@ local key = {
     left_alt = 'F16',
     left_command = 'F17',
     right_command = 'F18',
-    right_shift = 'F19',
+    right_alt = 'F19',
     both_shift = 'F20',
 
     hyper = { 'shift', 'ctrl', 'alt', 'cmd' },
@@ -40,8 +40,8 @@ local keyMap = {
         [singleKey('d', 'Documents')] = function() hs.execute("open ~/Documents") end
     }
 }
-spoon.RecursiveBinder.escapeKey = { {}, key.right_shift } -- Press escape to abort
-hs.hotkey.bind({}, key.right_shift, spoon.RecursiveBinder.recursiveBind(keyMap))
+spoon.RecursiveBinder.escapeKey = { {}, "escape" }
+hs.hotkey.bind({ "alt" }, "space", spoon.RecursiveBinder.recursiveBind(keyMap))
 
 ----------------------------------------------------------------------------------------------------
 --- Global hotkeys
