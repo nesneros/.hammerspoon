@@ -14,16 +14,19 @@ spoon.RecursiveBinder.helperEntryEachLine = 4
 spoon.RecursiveBinder.helperEntryLengthInChar = 30
 local singleKey = spoon.RecursiveBinder.singleKey
 
--- Click on modifiers are mapped to fuunctions keys by Karabiner
-local modKey = {
+local key = {
+    -- Keys bound with Karabiner
     left_shift = 'F13',
     left_alt = 'F16',
     left_command = 'F17',
     right_command = 'F18',
     right_shift = 'F19',
     both_shift = 'F20',
+
+    hyper = { 'shift', 'ctrl', 'alt', 'cmd' },
+
 }
-    
+
 
 local keyMap = {
     [singleKey('b', 'browser')] = function() hs.application.launchOrFocus("Arc") end,
@@ -37,12 +40,8 @@ local keyMap = {
         [singleKey('d', 'Documents')] = function() hs.execute("open ~/Documents") end
     }
 }
-spoon.RecursiveBinder.escapeKey = { {}, modKey.right_shift } -- Press escape to abort
-hs.hotkey.bind({}, modKey.right_shift, spoon.RecursiveBinder.recursiveBind(keyMap))
-
-----------------------------------------------------------------------------------------------------
--- paste by emitting fake keyboard events. This is a workaround for pasting to (password) fields that blocks pasting.
-hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "V", function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end)
+spoon.RecursiveBinder.escapeKey = { {}, key.right_shift } -- Press escape to abort
+hs.hotkey.bind({}, key.right_shift, spoon.RecursiveBinder.recursiveBind(keyMap))
 
 ----------------------------------------------------------------------------------------------------
 --- Global hotkeys
@@ -58,14 +57,14 @@ local function activate_app_and_send_key(app_name, mods, key)
 end
 
 -- Activate cmm-T in Arc
-hs.hotkey.bind({}, modKey.right_command, function()
+hs.hotkey.bind({}, key.right_command, function()
     activate_app_and_send_key("Arc", { "cmd" }, "t")
 end)
 
 
 ----------------------------------------------------------------------------------------------------
 --- Keyboard layouts
-local function rotateKeyboarLayout() 
+local function rotateKeyboarLayout()
     local allLayouts = hs.keycodes.layouts()
 
     local currentLayout = hs.keycodes.currentLayout()
@@ -78,7 +77,7 @@ local function rotateKeyboarLayout()
     end
     hs.keycodes.setLayout(allLayouts[newIndex])
 end
-hs.hotkey.bind({}, modKey.both_shift, rotateKeyboarLayout)
+hs.hotkey.bind({}, key.both_shift, rotateKeyboarLayout)
 
 ----------------------------------------------------------------------------------------------------
 --- Window management
@@ -159,19 +158,22 @@ local function home_work_layout()
     end
 end
 
-
-
 ----------------------------------------------------------------------------------------------------
 --- Menubar
 local menubar = hs.menubar.new(true, "myhammerspoonmenubar")
 if menubar then
     menubar:setIcon(hs.image.imageFromName("NSHandCursor"))
     menubar:setMenu({
-        { title = "Toggle Caps Lock", fn = hs.hid.capslock.toggle },
-        { title = "Sleep",            fn = function() hs.caffeinate.systemSleep() end },
+        { title = "Work Layout",        fn = work_layout },
+        { title = "Home Work Layout",   fn = home_work_layout, },
+        { title = "Home Layout",        fn = home_layout, },
         { title = "-" },
-        { title = "Work Layout",      fn = work_layout },
-        { title = "Home Work Layout", fn = home_work_layout, },
-        { title = "Home Layout",      fn = home_layout, },
+        -- paste by emitting fake keyboard events. This is a workaround for pasting to (password) fields that blocks pasting.
+        { title = "Paste by Keystroke", fn = function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end },
+        { title = "Toggle Caps Lock",   fn = hs.hid.capslock.toggle },
+        { title = "Sleep",              fn = function() hs.caffeinate.systemSleep() end },
+
     })
 end
+
+-----
