@@ -1,28 +1,6 @@
 {
    "rules": [
       {
-         "description": "left_shift -> f13",
-         "manipulators": [
-            {
-               "from": {
-                  "key_code": "left_shift",
-                  "modifiers": { }
-               },
-               "to": [
-                  {
-                     "key_code": "left_shift"
-                  }
-               ],
-               "to_if_alone": [
-                  {
-                     "key_code": "f13"
-                  }
-               ],
-               "type": "basic"
-            }
-         ]
-      },
-      {
          "description": "left_alt -> f16",
          "manipulators": [
             {
@@ -60,28 +38,6 @@
                "to_if_alone": [
                   {
                      "key_code": "f17"
-                  }
-               ],
-               "type": "basic"
-            }
-         ]
-      },
-      {
-         "description": "right_command -> f18",
-         "manipulators": [
-            {
-               "from": {
-                  "key_code": "right_command",
-                  "modifiers": { }
-               },
-               "to": [
-                  {
-                     "key_code": "right_command"
-                  }
-               ],
-               "to_if_alone": [
-                  {
-                     "key_code": "f18"
                   }
                ],
                "type": "basic"

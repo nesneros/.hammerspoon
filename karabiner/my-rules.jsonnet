@@ -25,13 +25,13 @@ local map_modifier(modifier, to_key) = {
   // F20 seems to be the highest possible function key
   title: 'Personal',
   rules: [
-    map_modifier('left_shift', 'f13'),
+    // map_modifier('left_shift', 'f13'),
     // Note that F14 and F15 controls brightness. Seems not possible to disable them.
     // map_modifier('fn', 'f16'),
     // map_modifier('left_control', 'f17'),
     map_modifier('left_alt', 'f16'),
     map_modifier('left_command', 'f17'),
-    map_modifier('right_command', 'f18'),
+    // map_modifier('right_command', 'f18'),
     map_modifier('right_alt', 'f19'),
     // map_modifier('right_control', 'f19'),
     // map_modifier('right_shift', 'f19'),

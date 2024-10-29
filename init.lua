@@ -16,10 +16,10 @@ local singleKey = spoon.RecursiveBinder.singleKey
 
 local key = {
     -- Keys bound with Karabiner
-    left_shift = 'F13',
+    -- left_shift = 'F13',
     left_alt = 'F16',
     left_command = 'F17',
-    right_command = 'F18',
+    -- right_command = 'F18',
     right_alt = 'F19',
     both_shift = 'F20',
 
@@ -57,7 +57,7 @@ local function activate_app_and_send_key(app_name, mods, key)
 end
 
 -- Activate cmm-T in Arc
-hs.hotkey.bind({}, key.right_command, function()
+hs.hotkey.bind(key.hyper, "t", function()
     activate_app_and_send_key("Arc", { "cmd" }, "t")
 end)
 
