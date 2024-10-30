@@ -237,6 +237,141 @@
                "type": "basic"
             }
          ]
+      },
+      {
+         "description": "a & b (simultaneously) => Open Arc",
+         "manipulators": [
+            {
+               "from": {
+                  "simultaneous": [
+                     {
+                        "key_code": "a"
+                     },
+                     {
+                        "key_code": "b"
+                     }
+                  ]
+               },
+               "parameters": {
+                  "basic.simultaneous_threshold_milliseconds": 100,
+                  "basic.to_if_held_down_threshold_milliseconds": 175
+               },
+               "to_if_held_down": [
+                  {
+                     "shell_command": "open -a \"Arc\""
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "a & k (simultaneously) => Open Karabiner-Elements",
+         "manipulators": [
+            {
+               "from": {
+                  "simultaneous": [
+                     {
+                        "key_code": "a"
+                     },
+                     {
+                        "key_code": "k"
+                     }
+                  ]
+               },
+               "parameters": {
+                  "basic.simultaneous_threshold_milliseconds": 100,
+                  "basic.to_if_held_down_threshold_milliseconds": 175
+               },
+               "to_if_held_down": [
+                  {
+                     "shell_command": "open -a \"Karabiner-Elements\""
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "a & s (simultaneously) => Open Slack",
+         "manipulators": [
+            {
+               "from": {
+                  "simultaneous": [
+                     {
+                        "key_code": "a"
+                     },
+                     {
+                        "key_code": "s"
+                     }
+                  ]
+               },
+               "parameters": {
+                  "basic.simultaneous_threshold_milliseconds": 100,
+                  "basic.to_if_held_down_threshold_milliseconds": 175
+               },
+               "to_if_held_down": [
+                  {
+                     "shell_command": "open -a \"Slack\""
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "a & t (simultaneously) => Open Kitty",
+         "manipulators": [
+            {
+               "from": {
+                  "simultaneous": [
+                     {
+                        "key_code": "a"
+                     },
+                     {
+                        "key_code": "t"
+                     }
+                  ]
+               },
+               "parameters": {
+                  "basic.simultaneous_threshold_milliseconds": 100,
+                  "basic.to_if_held_down_threshold_milliseconds": 175
+               },
+               "to_if_held_down": [
+                  {
+                     "shell_command": "open -a \"Kitty\""
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "a & v (simultaneously) => Open Visual Studio Code",
+         "manipulators": [
+            {
+               "from": {
+                  "simultaneous": [
+                     {
+                        "key_code": "a"
+                     },
+                     {
+                        "key_code": "v"
+                     }
+                  ]
+               },
+               "parameters": {
+                  "basic.simultaneous_threshold_milliseconds": 100,
+                  "basic.to_if_held_down_threshold_milliseconds": 175
+               },
+               "to_if_held_down": [
+                  {
+                     "shell_command": "open -a \"Visual Studio Code\""
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
       }
    ],
    "title": "Personal"

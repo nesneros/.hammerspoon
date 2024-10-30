@@ -38,6 +38,34 @@ local same_time_modifier(modifier1, modifier2, to_key) = {
   ],
 };
 
+// hold a (for app) together with another key to open an app
+local open_app(key, app) = {
+  description: 'a & ' + key + ' (simultaneously) => Open ' + app,
+  manipulators: [
+    {
+      type: 'basic',
+      from: {
+        simultaneous: [
+          {
+            key_code: 'a',
+          },
+          {
+            key_code: key,
+          },
+        ],
+      },
+      to_if_held_down: [
+        {
+          shell_command: 'open -a "' + app + '"',
+        },
+      ],
+      parameters: {
+        'basic.simultaneous_threshold_milliseconds': 100,
+        'basic.to_if_held_down_threshold_milliseconds': 175,
+      },
+    },
+  ],
+};
 
 local hyper = ['left_shift', 'left_command', 'left_control', 'left_alt'];
 local hyperKey = 'Space';
@@ -111,5 +139,10 @@ local map_hyper(from, to) = {
     map_hyper('comma', 'f24'),
     map_hyper('period', 'f24'),
     map_hyper('w', 'f24'),
+
+    open_app('b', 'Arc'),
+    open_app('s', 'Slack'),
+    open_app('t', 'Kitty'),
+    open_app('v', 'Visual Studio Code'),
   ],
 }
