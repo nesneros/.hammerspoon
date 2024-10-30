@@ -21,6 +21,44 @@ local map_modifier(modifier, to_key) = {
   ],
 };
 
+local same_time_modifier(modifier1, modifier2, to_key) = {
+  entry:: function(mod1, mod2) {
+    from: {
+      key_code: mod1,
+      modifiers: { mandatory: [mod2] },
+    },
+    to: [{ key_code: to_key }],
+    to_if_alone: [{ key_code: mod1 }],
+    type: 'basic',
+  },
+  description: modifier1 + ' + ' + modifier2 + ' at the same time -> ' + to_key,
+  manipulators: [
+    self.entry(modifier1, modifier2),
+    self.entry(modifier2, modifier1),
+  ],
+};
+
+
+local hyper = ['left_shift', 'left_command', 'left_control', 'left_alt'];
+local hyperKey = 'Space';
+local map_hyper(from, to) = {
+  description: hyperKey + ' ' + from + ' -> ' + to,
+  manipulators: [
+    {
+      type: 'basic',
+      from: {
+        key_code: from,
+        modifiers: { mandatory: hyper },
+      },
+      to: [
+        {
+          key_code: to,
+        },
+      ],
+    },
+  ],
+};
+
 {
   // F20 seems to be the highest possible function key
   title: 'Personal',
@@ -35,31 +73,7 @@ local map_modifier(modifier, to_key) = {
     map_modifier('right_alt', 'f19'),
     // map_modifier('right_control', 'f19'),
     // map_modifier('right_shift', 'f19'),
-    {
-      description: 'left_shift + right_shift at the same time -> f20',
-      manipulators: [
-        {
-          from: {
-            key_code: 'left_shift',
-            modifiers: { mandatory: ['right_shift'] },
-          },
-          to: [{ key_code: 'f20' }],
-          to_if_alone: [{ key_code: 'left_shift' }],
-          type: 'basic',
-        },
-        {
-          from: {
-            key_code: 'right_shift',
-            modifiers: {
-              mandatory: ['left_shift'],
-            },
-          },
-          to: [{ key_code: 'f20' }],
-          to_if_alone: [{ key_code: 'right_shift' }],
-          type: 'basic',
-        },
-      ],
-    },
+    same_time_modifier('left_shift', 'right_shift', 'f20'),
     {
       description: 'Change caps_lock to control if pressed with other keys, to escape if pressed alone.',
       manipulators: [
@@ -84,8 +98,8 @@ local map_modifier(modifier, to_key) = {
           },
           to: [
             {
-              key_code: 'left_shift',
-              modifiers: ['left_control', 'left_alt', 'left_command'],
+              key_code: hyper[0],
+              modifiers: std.slice(hyper, 1, std.length(hyper), 1),
             },
           ],
           to_if_alone: [{ key_code: 'spacebar' }],
@@ -93,5 +107,9 @@ local map_modifier(modifier, to_key) = {
         },
       ],
     },
+    // hyper . and , flashes the screen. '.' also make a system diagnostic. Map these to F24.
+    map_hyper('comma', 'f24'),
+    map_hyper('period', 'f24'),
+    map_hyper('w', 'f24'),
   ],
 }

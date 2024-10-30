@@ -151,15 +151,87 @@
                   {
                      "key_code": "left_shift",
                      "modifiers": [
+                        "left_command",
                         "left_control",
-                        "left_alt",
-                        "left_command"
+                        "left_alt"
                      ]
                   }
                ],
                "to_if_alone": [
                   {
                      "key_code": "spacebar"
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "Space comma -> f24",
+         "manipulators": [
+            {
+               "from": {
+                  "key_code": "comma",
+                  "modifiers": {
+                     "mandatory": [
+                        "left_shift",
+                        "left_command",
+                        "left_control",
+                        "left_alt"
+                     ]
+                  }
+               },
+               "to": [
+                  {
+                     "key_code": "f24"
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "Space period -> f24",
+         "manipulators": [
+            {
+               "from": {
+                  "key_code": "period",
+                  "modifiers": {
+                     "mandatory": [
+                        "left_shift",
+                        "left_command",
+                        "left_control",
+                        "left_alt"
+                     ]
+                  }
+               },
+               "to": [
+                  {
+                     "key_code": "f24"
+                  }
+               ],
+               "type": "basic"
+            }
+         ]
+      },
+      {
+         "description": "Space w -> f24",
+         "manipulators": [
+            {
+               "from": {
+                  "key_code": "w",
+                  "modifiers": {
+                     "mandatory": [
+                        "left_shift",
+                        "left_command",
+                        "left_control",
+                        "left_alt"
+                     ]
+                  }
+               },
+               "to": [
+                  {
+                     "key_code": "f24"
                   }
                ],
                "type": "basic"
