@@ -87,6 +87,35 @@ local map_hyper(from, to) = {
   ],
 };
 
+local disable_hyper_on_key(key) = {
+  type: 'basic',
+  from: {
+    key_code: key,
+    modifiers: {
+      optional: ['any'],
+    },
+  },
+  to: [
+    {
+      key_code: key,
+    },
+    {
+      set_variable: {
+        name: 'disable_hyper_key',
+        value: 1,
+      },
+    },
+  ],
+  to_after_key_up: [
+    {
+      set_variable: {
+        name: 'disable_hyper_key',
+        value: 0,
+      },
+    },
+  ],
+};
+
 {
   // F20 seems to be the highest possible function key
   title: 'Personal',
@@ -116,10 +145,21 @@ local map_hyper(from, to) = {
         },
       ],
     },
+    // hyper . and , flashes the screen. '.' also make a system diagnostic. Map these to F24.
+    map_hyper('comma', 'f24'),
+    map_hyper('period', 'f24'),
+    map_hyper('w', 'f24'),
     {
       description: 'Change spacebar to hyper, if not pressed with other keys.',
       manipulators: [
         {
+          conditions: [
+            {
+              name: 'disable_hyper_key',
+              type: 'variable_if',
+              value: 0,
+            },
+          ],
           from: {
             key_code: 'spacebar',
             modifiers: {},
@@ -133,12 +173,11 @@ local map_hyper(from, to) = {
           to_if_alone: [{ key_code: 'spacebar' }],
           type: 'basic',
         },
+        // disale hyper key when pressing '.' and ',' because that will trigger a system diagnostic.
+        disable_hyper_on_key('period'),
+        disable_hyper_on_key('comma'),
       ],
     },
-    // hyper . and , flashes the screen. '.' also make a system diagnostic. Map these to F24.
-    map_hyper('comma', 'f24'),
-    map_hyper('period', 'f24'),
-    map_hyper('w', 'f24'),
 
     // open_app('b', 'Arc'),
     // open_app('s', 'Slack'),
