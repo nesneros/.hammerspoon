@@ -60,7 +60,7 @@ local open_app(key, app) = {
         },
       ],
       parameters: {
-        'basic.simultaneous_threshold_milliseconds': 100,
+        'basic.simultaneous_threshold_milliseconds': 50,
         'basic.to_if_held_down_threshold_milliseconds': 175,
       },
     },
@@ -140,9 +140,15 @@ local map_hyper(from, to) = {
     map_hyper('period', 'f24'),
     map_hyper('w', 'f24'),
 
-    open_app('b', 'Arc'),
-    open_app('s', 'Slack'),
-    open_app('t', 'Kitty'),
-    open_app('v', 'Visual Studio Code'),
+    // open_app('b', 'Arc'),
+    // open_app('s', 'Slack'),
+    // open_app('t', 'Kitty'),
+    // open_app('v', 'Visual Studio Code'),
+
+    // VIM navi with haper
+    map_hyper('h', 'left_arrow'),
+    map_hyper('j', 'down_arrow'),
+    map_hyper('k', 'up_arrow'),
+    map_hyper('l', 'right_arrow'),
   ],
 }
