@@ -164,12 +164,16 @@ local disable_hyper_on_key(key) = {
             key_code: 'spacebar',
             modifiers: {},
           },
-          to: [
+           to_if_held_down: [
             {
               key_code: hyper[0],
               modifiers: std.slice(hyper, 1, std.length(hyper), 1),
             },
           ],
+          parameters: {
+            'basic.to_if_alone_timeout_milliseconds': 150,
+            'basic.to_if_held_down_threshold_milliseconds': 150,
+          },
           to_if_alone: [{ key_code: 'spacebar' }],
           type: 'basic',
         },
