@@ -68,7 +68,7 @@ local open_app(key, app) = {
 };
 
 local hyper = ['left_shift', 'left_command', 'left_control', 'left_alt'];
-local hyperKey = 'Space';
+local hyperKey = 'tab';
 local map_hyper(from, to) = {
   description: hyperKey + ' ' + from + ' -> ' + to,
   manipulators: [
@@ -150,7 +150,7 @@ local disable_hyper_on_key(key) = {
     map_hyper('period', 'f24'),
     map_hyper('w', 'f24'),
     {
-      description: 'Change spacebar to hyper, if not pressed with other keys.',
+      description: 'Change ' + hyperKey + ' to hyper, if not pressed with other keys.',
       manipulators: [
         {
           conditions: [
@@ -161,10 +161,10 @@ local disable_hyper_on_key(key) = {
             },
           ],
           from: {
-            key_code: 'spacebar',
+            key_code: hyperKey,
             modifiers: {},
           },
-           to_if_held_down: [
+          to_if_held_down: [
             {
               key_code: hyper[0],
               modifiers: std.slice(hyper, 1, std.length(hyper), 1),
@@ -174,7 +174,7 @@ local disable_hyper_on_key(key) = {
             'basic.to_if_alone_timeout_milliseconds': 150,
             'basic.to_if_held_down_threshold_milliseconds': 150,
           },
-          to_if_alone: [{ key_code: 'spacebar' }],
+          to_if_alone: [{ key_code: hyperKey }],
           type: 'basic',
         },
         // disale hyper key when pressing '.' and ',' because that will trigger a system diagnostic.
