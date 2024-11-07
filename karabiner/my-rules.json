@@ -292,7 +292,7 @@
          ]
       },
       {
-         "description": "Change tab to hyper, if not pressed with other keys.",
+         "description": "Change tab to hyper if pressed with other keys.",
          "manipulators": [
             {
                "conditions": [
