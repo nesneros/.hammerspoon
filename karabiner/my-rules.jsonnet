@@ -174,16 +174,12 @@ local double_tab(key, to) = {
             key_code: hyperKey,
             modifiers: {},
           },
-          to_if_held_down: [
+          to: [
             {
               key_code: hyper[0],
               modifiers: std.slice(hyper, 1, std.length(hyper), 1),
             },
           ],
-          parameters: {
-            'basic.to_if_alone_timeout_milliseconds': 150,
-            'basic.to_if_held_down_threshold_milliseconds': 150,
-          },
         },
         // disale hyper key when pressing '.' and ',' because that will trigger a system diagnostic.
         disable_hyper_on_key('period'),

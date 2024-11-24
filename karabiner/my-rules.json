@@ -306,16 +306,7 @@
                   "key_code": "tab",
                   "modifiers": { }
                },
-               "parameters": {
-                  "basic.to_if_alone_timeout_milliseconds": 150,
-                  "basic.to_if_held_down_threshold_milliseconds": 150
-               },
-               "to_if_alone": [
-                  {
-                     "key_code": "tab"
-                  }
-               ],
-               "to_if_held_down": [
+               "to": [
                   {
                      "key_code": "left_shift",
                      "modifiers": [
@@ -323,6 +314,11 @@
                         "left_control",
                         "left_alt"
                      ]
+                  }
+               ],
+               "to_if_alone": [
+                  {
+                     "key_code": "tab"
                   }
                ],
                "type": "basic"
