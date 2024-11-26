@@ -103,7 +103,7 @@ local disable_hyper_on_key(key) = basic + from_with_any_mods(key) {
   to_after_key_up: [set_var('disable_hyper_key', 0)],
 };
 
-local double_tab(key, to) = {
+local double_tap(key, to) = {
   setv:: function(value) set_var(key + ' pressed', value),
   description: 'double-tap ' + key + ' -> ' + to,
   manipulators: [
@@ -148,7 +148,7 @@ local double_tab(key, to) = {
     // map_modifier('right_control', 'f19'),
     // map_modifier('right_shift', 'f19'),
     same_time_modifier('left_shift', 'right_shift', 'f20'),
-    double_tab('right_shift', 'f18'),
+    double_tap('right_shift', 'f18'),
     {
       description: 'Change caps_lock to control if pressed with other keys, to escape if pressed alone.',
       manipulators: [
