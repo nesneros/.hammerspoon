@@ -1,8 +1,5 @@
 [tools]
 go-jsonnet = "latest"
 
-[tasks.update-karabiner]
-run = "cd karabiner && ./install.sh"
-
 [tasks.jsonnet]
 run = "cd karabiner && jsonnet my-rules.jsonnet > my-rules.json"
