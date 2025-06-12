@@ -503,6 +503,23 @@
                "type": "basic"
             }
          ]
+      },
+      {
+         "description": "right_command -> [\"right_command\", \"right_shift\"]",
+         "manipulators": [
+            {
+               "from": {
+                  "key_code": "right_command"
+               },
+               "to": {
+                  "key_code": "right_command",
+                  "modifiers": [
+                     "right_shift"
+                  ]
+               },
+               "type": "basic"
+            }
+         ]
       }
    ],
    "title": "Personal"

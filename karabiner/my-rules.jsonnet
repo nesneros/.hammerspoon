@@ -2,6 +2,12 @@ local basic = { type: 'basic' };
 
 local to(key) = { to: [{ key_code: key }] };
 local to_if_alone(key) = { to_if_alone: [{ key_code: key }] };
+local to_with_mods(to_key, mods) = {
+  to: {
+    key_code: to_key,
+    modifiers: mods,
+  },
+};
 
 local from_with_mods(from_key, mods) = {
   from: {
@@ -41,6 +47,15 @@ local map_modifier(modifier, to_key) = {
   ],
 };
 
+local map_single_mod_to_multiple(from_mod, to_mods) = {
+  description: from_mod + ' -> ' + to_mods,
+  manipulators: [
+    basic + to_with_mods(to_mods[0], to_mods[1:]) {
+      from: { key_code: from_mod },
+    },
+  ],
+};
+
 local same_time_modifier(modifier1, modifier2, to_key) = {
   entry:: function(mod1, mod2) basic + to(to_key) + to_if_alone(mod1) + from_with_mods(mod1, [mod2]) {},
   description: modifier1 + ' + ' + modifier2 + ' at the same time -> ' + to_key,
@@ -54,34 +69,6 @@ local map_simultaneous(key1, key2, to_key) = {
   description: key1 + ' + ' + key2 + ' (simultaneously) -> ' + to_key,
   manipulators: [
     basic + to(to_key) + from_simul(key1, key2),
-  ],
-};
-
-// hold a (for app) together with another key to open an app
-local open_app(key, app) = {
-  description: 'a & ' + key + ' (simultaneously) => Open ' + app,
-  manipulators: [
-    basic {
-      from: {
-        simultaneous: [
-          {
-            key_code: 'a',
-          },
-          {
-            key_code: key,
-          },
-        ],
-      },
-      to_if_held_down: [
-        {
-          shell_command: 'open -a "' + app + '"',
-        },
-      ],
-      parameters: {
-        'basic.simultaneous_threshold_milliseconds': 50,
-        'basic.to_if_held_down_threshold_milliseconds': 175,
-      },
-    },
   ],
 };
 
@@ -186,17 +173,13 @@ local double_tap(key, to) = {
         disable_hyper_on_key('comma'),
       ],
     },
-
-    // open_app('b', 'Arc'),
-    // open_app('s', 'Slack'),
-    // open_app('t', 'Kitty'),
-    // open_app('v', 'Visual Studio Code'),
-
     map_simultaneous('delete_or_backspace', 'equal_sign', 'delete_forward'),
     // VIM navi with haper
     map_hyper('h', 'left_arrow'),
     map_hyper('j', 'down_arrow'),
     map_hyper('k', 'up_arrow'),
     map_hyper('l', 'right_arrow'),
+
+    map_single_mod_to_multiple('right_command', ['right_command', 'right_shift']),
   ],
 }
