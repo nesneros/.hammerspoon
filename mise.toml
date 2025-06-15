@@ -3,3 +3,9 @@ go-jsonnet = "latest"
 
 [tasks.jsonnet]
 run = "cd karabiner && jsonnet my-rules.jsonnet > my-rules.json"
+
+[tasks.install-hammerflow]
+run = "git clone https://github.com/saml-dev/Hammerflow.spoon.git ~/.hammerspoon/Spoons/Hammerflow.spoon"
+
+[tasks.update-hammerflow]
+run = "cd ~/.hammerspoon/Spoons/Hammerflow.spoon && git pull"

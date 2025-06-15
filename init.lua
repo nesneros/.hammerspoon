@@ -8,40 +8,17 @@ Install.use_syncinstall = true
 
 Install:andUse("EmmyLua", {})
 Install:andUse("KSheet", {})
-Install:andUse("RecursiveBinder", {})
-
-spoon.RecursiveBinder.helperEntryEachLine = 4
-spoon.RecursiveBinder.helperEntryLengthInChar = 30
-local singleKey = spoon.RecursiveBinder.singleKey
 
 local key = {
     -- Keys bound with Karabiner
-    -- left_shift = 'F13',
     left_alt = 'F16',
     left_command = 'F17',
-    -- right_command = 'F18',
+    right_shift_double_tab = 'F18',
     right_alt = 'F19',
     both_shift = 'F20',
 
     hyper = { 'shift', 'ctrl', 'alt', 'cmd' },
-
 }
-
-
-local keyMap = {
-    [singleKey('b', 'browser')] = function() hs.application.launchOrFocus("Arc") end,
-    [singleKey('t', 'kitty')] = function() hs.application.launchOrFocus("Kitty") end,
-    [singleKey('s', 'keybindings')] = function() spoon.KSheet:toggle() end,
-    [singleKey('h', 'HS console & reload')] = function()
-        hs.toggleConsole(); hs.reload()
-    end,
-    [singleKey('f', 'finder+')] = {
-        [singleKey('h', 'home')] = function() hs.execute("open ~") end,
-        [singleKey('d', 'Documents')] = function() hs.execute("open ~/Documents") end
-    }
-}
-spoon.RecursiveBinder.escapeKey = { {}, "escape" }
-hs.hotkey.bind({ "alt" }, "space", spoon.RecursiveBinder.recursiveBind(keyMap))
 
 ----------------------------------------------------------------------------------------------------
 --- Global hotkeys
@@ -56,8 +33,8 @@ local function activate_app_and_send_key(app_name, mods, key)
     end
 end
 
--- Activate cmm-T in Arc
-hs.hotkey.bind(key.hyper, "t", function()
+-- Activate cmd-T in Arc
+hs.hotkey.bind(key.hyper, "q", function()
     activate_app_and_send_key("Arc", { "cmd" }, "t")
 end)
 
@@ -158,22 +135,59 @@ local function home_work_layout()
     end
 end
 
-----------------------------------------------------------------------------------------------------
---- Menubar
-local menubar = hs.menubar.new(true, "myhammerspoonmenubar")
-if menubar then
-    menubar:setIcon(hs.image.imageFromName("NSHandCursor"))
-    menubar:setMenu({
-        { title = "Work Layout",        fn = work_layout },
-        { title = "Home Work Layout",   fn = home_work_layout, },
-        { title = "Home Layout",        fn = home_layout, },
-        { title = "-" },
-        -- paste by emitting fake keyboard events. This is a workaround for pasting to (password) fields that blocks pasting.
-        { title = "Paste by Keystroke", fn = function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end },
-        { title = "Toggle Caps Lock",   fn = hs.hid.capslock.toggle },
-        { title = "Sleep",              fn = function() hs.caffeinate.systemSleep() end },
-
-    })
+local function ksheet_toggle()
+    spoon.KSheet:toggle()
 end
 
------
+local function reload_config()
+    hs.console.clearConsole()
+    hs.openConsole()
+    hs.reload()
+end
+
+----------------------------------------------------------------------------------------------------
+--- Menubar
+local function createMenubar()
+    -- The process here to setup the menu is to ensure that it works with Ice
+    -- Always delete existing menubar first
+    if MyHammerspoonMenu then
+        MyHammerspoonMenu:delete()
+    end
+
+    -- Small delay to let macOS process the deletion
+    hs.timer.doAfter(0.1, function()
+        MyHammerspoonMenu = hs.menubar.new(true, "myhammerspoonmenubar")
+        MyHammerspoonMenu:setTitle("🔨🥄")
+        -- menubar:setIcon(hs.image.imageFromName("NSHandCursor"))
+        MyHammerspoonMenu:setMenu({
+            { title = "Work Layout",        fn = work_layout },
+            { title = "Home Work Layout",   fn = home_work_layout, },
+            { title = "Home Layout",        fn = home_layout, },
+            { title = "-" },
+            { title = "Toggle KSheet",      fn = ksheet_toggle },
+            { title = "Reload Config",      fn = reload_config },
+            -- paste by emitting fake keyboard events. This is a workaround for pasting to (password) fields that blocks pasting.
+            { title = "Paste by Keystroke", fn = function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end },
+            { title = "Toggle Caps Lock",   fn = hs.hid.capslock.toggle },
+            { title = "Sleep",              fn = function() hs.caffeinate.systemSleep() end },
+        })
+    end)
+end
+
+createMenubar()
+
+------------------------------------------------------------------------------------------------------------
+--- Hammerflow
+hs.loadSpoon("Hammerflow")
+spoon.Hammerflow.loadFirstValidTomlFile({
+    -- "/Users/jan/Documents/.sync/hammerflow.toml",
+
+    "hammerflow.toml"
+})
+-- optionally respect auto_reload setting in the toml config.
+if spoon.Hammerflow.auto_reload then
+    hs.loadSpoon("ReloadConfiguration")
+    -- set any paths for auto reload
+    -- spoon.ReloadConfiguration.watch_paths = {hs.configDir, "~/path/to/my/configs/"}
+    spoon.ReloadConfiguration:start()
+end
