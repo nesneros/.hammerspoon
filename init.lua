@@ -11,6 +11,7 @@ Install:andUse("KSheet", {})
 
 local key = {
     -- Keys bound with Karabiner
+    caps_lock_tap = 'F13',
     left_alt = 'F16',
     left_command = 'F17',
     right_shift_double_tab = 'F18',

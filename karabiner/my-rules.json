@@ -194,7 +194,7 @@
          ]
       },
       {
-         "description": "Change caps_lock to control if pressed with other keys, to f18 if pressed alone.",
+         "description": "Change caps_lock to control if pressed with other keys, to f13 if pressed alone.",
          "manipulators": [
             {
                "from": {
@@ -212,7 +212,7 @@
                ],
                "to_if_alone": [
                   {
-                     "key_code": "f18"
+                     "key_code": "f13"
                   }
                ],
                "type": "basic"
@@ -505,11 +505,14 @@
          ]
       },
       {
-         "description": "right_command -> [\"right_command\", \"right_shift\"]",
+         "description": "right_command -> right_command & right_shift",
          "manipulators": [
             {
                "from": {
-                  "key_code": "right_command"
+                  "key_code": "right_command",
+                  "modifiers": {
+                     "mandatory": [ ]
+                  }
                },
                "to": {
                   "key_code": "right_command",

@@ -47,12 +47,10 @@ local map_modifier(modifier, to_key) = {
   ],
 };
 
-local map_single_mod_to_multiple(from_mod, to_mods) = {
-  description: from_mod + ' -> ' + to_mods,
+local map_to_multiple_mods(from_key, to_mods) = {
+  description: from_key + ' -> ' + std.join(" & ", to_mods),
   manipulators: [
-    basic + to_with_mods(to_mods[0], to_mods[1:]) {
-      from: { key_code: from_mod },
-    },
+    basic + to_with_mods(to_mods[0], to_mods[1:]) + from_with_mods(from_key, []),
   ],
 };
 
@@ -122,24 +120,18 @@ local double_tap(key, to) = {
 
 {
   // F20 seems to be the highest possible function key
+  // F14 and F15 controls brightness. Seems not possible to disable them.
   title: 'Personal',
   rules: [
-    // map_modifier('left_shift', 'f13'),
-    // Note that F14 and F15 controls brightness. Seems not possible to disable them.
-    // map_modifier('fn', 'f16'),
-    // map_modifier('left_control', 'f17'),
     map_modifier('left_alt', 'f16'),
     map_modifier('left_command', 'f17'),
-    // map_modifier('right_command', 'f18'),
     map_modifier('right_alt', 'f19'),
-    // map_modifier('right_control', 'f19'),
-    // map_modifier('right_shift', 'f19'),
     same_time_modifier('left_shift', 'right_shift', 'f20'),
     double_tap('right_shift', 'f18'),
     {
-      description: 'Change caps_lock to control if pressed with other keys, to f18 if pressed alone.',
+      description: 'Change caps_lock to control if pressed with other keys, to f13 if pressed alone.',
       manipulators: [
-        basic + to('left_control') + to_if_alone('f18') + from_with_any_mods('caps_lock'),
+        basic + to('left_control') + to_if_alone('f13') + from_with_any_mods('caps_lock'),
       ],
     },
     // hyper . and , flashes the screen. '.' also make a system diagnostic. Map these to F24.
@@ -180,6 +172,6 @@ local double_tap(key, to) = {
     map_hyper('k', 'up_arrow'),
     map_hyper('l', 'right_arrow'),
 
-    map_single_mod_to_multiple('right_command', ['right_command', 'right_shift']),
+    map_to_multiple_mods('right_command', ['right_command', 'right_shift']),
   ],
 }
