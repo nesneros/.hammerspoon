@@ -180,8 +180,6 @@ createMenubar()
 --- Hammerflow
 hs.loadSpoon("Hammerflow")
 spoon.Hammerflow.loadFirstValidTomlFile({
-    -- "/Users/jan/Documents/.sync/hammerflow.toml",
-
     "hammerflow.toml"
 })
 -- optionally respect auto_reload setting in the toml config.
