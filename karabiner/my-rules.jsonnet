@@ -137,9 +137,9 @@ local double_tap(key, to) = {
     same_time_modifier('left_shift', 'right_shift', 'f20'),
     double_tap('right_shift', 'f18'),
     {
-      description: 'Change caps_lock to control if pressed with other keys, to escape if pressed alone.',
+      description: 'Change caps_lock to control if pressed with other keys, to f18 if pressed alone.',
       manipulators: [
-        basic + to('left_control') + to_if_alone('escape') + from_with_any_mods('caps_lock'),
+        basic + to('left_control') + to_if_alone('f18') + from_with_any_mods('caps_lock'),
       ],
     },
     // hyper . and , flashes the screen. '.' also make a system diagnostic. Map these to F24.
