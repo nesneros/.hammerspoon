@@ -156,7 +156,8 @@ local function createMenubar()
     end
 
     -- Small delay to let macOS process the deletion
-    hs.timer.doAfter(0.1, function()
+    -- Store time in variable to avoid it being garbage collected
+    TheTimer = hs.timer.doAfter(0.1, function()
         MyHammerspoonMenu = hs.menubar.new(true, "myhammerspoonmenubar")
         MyHammerspoonMenu:setTitle("🔨🥄")
         -- menubar:setIcon(hs.image.imageFromName("NSHandCursor"))
@@ -172,6 +173,7 @@ local function createMenubar()
             { title = "Toggle Caps Lock",   fn = hs.hid.capslock.toggle },
             { title = "Sleep",              fn = function() hs.caffeinate.systemSleep() end },
         })
+        TheTimer = nil
     end)
 end
 
