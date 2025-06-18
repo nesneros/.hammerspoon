@@ -1,5 +1,7 @@
 local logger = hs.logger.new('init.lua', 'debug')
 
+hs.allowAppleScript(true)
+
 require('hs.ipc')
 
 hs.loadSpoon("SpoonInstall")
@@ -108,6 +110,35 @@ local function screensChanged()
     end
 end
 
+-- Move the currently focused window to a specific screen by name
+local function move_window_to_screen(win, screenName)
+    -- local win = hs.window.focusedWindow()
+    -- if not win then
+    --     hs.alert("No focused window")
+    --     return
+    -- end
+
+    local targetScreen = nil
+    for _, screen in ipairs(hs.screen.allScreens()) do
+        if screen:name() == screenName then
+            targetScreen = screen
+            break
+        end
+    end
+
+    if not targetScreen then
+        hs.alert("Screen '" .. screenName .. "' not found")
+        return
+    end
+
+    win:moveToScreen(targetScreen)
+    hs.alert("Moved to " .. screenName)
+end
+
+-- Example usage: move the focused window to the screen named "DELL U2720Q"
+-- moveWindowToScreen("DELL U2720Q")
+
+
 hs.screen.watcher.new(screensChanged):start()
 screensChanged()
 
@@ -136,6 +167,13 @@ local function home_work_layout()
     end
 end
 
+local function identify_screens()
+    -- loop through all screens and print out their names
+    for i, screen in ipairs(hs.screen.allScreens()) do
+        hs.alert("Screen " .. i .. ": " .. screen:name(), screen)
+    end
+end
+
 local function ksheet_toggle()
     spoon.KSheet:toggle()
 end
@@ -148,36 +186,32 @@ end
 
 ----------------------------------------------------------------------------------------------------
 --- Menubar
-local function createMenubar()
-    -- The process here to setup the menu is to ensure that it works with Ice
-    -- Always delete existing menubar first
-    if MyHammerspoonMenu then
-        MyHammerspoonMenu:delete()
-    end
-
-    -- Small delay to let macOS process the deletion
-    -- Store time in variable to avoid it being garbage collected
-    TheTimer = hs.timer.doAfter(0.1, function()
-        MyHammerspoonMenu = hs.menubar.new(true, "myhammerspoonmenubar")
-        MyHammerspoonMenu:setTitle("🔨🥄")
-        -- menubar:setIcon(hs.image.imageFromName("NSHandCursor"))
-        MyHammerspoonMenu:setMenu({
-            { title = "Work Layout",        fn = work_layout },
-            { title = "Home Work Layout",   fn = home_work_layout, },
-            { title = "Home Layout",        fn = home_layout, },
-            { title = "-" },
-            { title = "Toggle KSheet",      fn = ksheet_toggle },
-            { title = "Reload Config",      fn = reload_config },
-            -- paste by emitting fake keyboard events. This is a workaround for pasting to (password) fields that blocks pasting.
-            { title = "Paste by Keystroke", fn = function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end },
-            { title = "Toggle Caps Lock",   fn = hs.hid.capslock.toggle },
-            { title = "Sleep",              fn = function() hs.caffeinate.systemSleep() end },
-        })
-        TheTimer = nil
-    end)
+-- Always delete existing menubar first
+if MyHammerspoonMenu then
+    MyHammerspoonMenu:delete()
 end
 
-createMenubar()
+-- Small delay to let macOS process the deletion
+-- Store time in variable to avoid it being garbage collected
+TheTimer = hs.timer.doAfter(0.1, function()
+    MyHammerspoonMenu = hs.menubar.new(true, "myhammerspoonmenubar")
+    MyHammerspoonMenu:setTitle("🔨🥄")
+    -- menubar:setIcon(hs.image.imageFromName("NSHandCursor"))
+    MyHammerspoonMenu:setMenu({
+        { title = "Work Layout",        fn = work_layout },
+        { title = "Home Work Layout",   fn = home_work_layout, },
+        { title = "Home Layout",        fn = home_layout, },
+        { title = "-" },
+        { title = "Toggle KSheet",      fn = ksheet_toggle },
+        { title = "Reload Config",      fn = reload_config },
+        { title = "Identify Screens",   fn = identify_screens },
+        -- paste by emitting fake keyboard events. This is a workaround for pasting to (password) fields that blocks pasting.
+        { title = "Paste by Keystroke", fn = function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end },
+        { title = "Toggle Caps Lock",   fn = hs.hid.capslock.toggle },
+        { title = "Sleep",              fn = function() hs.caffeinate.systemSleep() end },
+    })
+    TheTimer = nil
+end)
 
 ------------------------------------------------------------------------------------------------------------
 --- Hammerflow
