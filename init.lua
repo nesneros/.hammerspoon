@@ -25,7 +25,7 @@ local key = {
 
 ----------------------------------------------------------------------------------------------------
 --- Global hotkeys
-local function activate_app_and_send_key(app_name, mods, key)
+local function activateAppAandSsendKkey(app_name, mods, key)
     hs.application.launchOrFocus(app_name)
     local app = hs.appfinder.appFromName(app_name)
     if app then
@@ -35,11 +35,6 @@ local function activate_app_and_send_key(app_name, mods, key)
         hs.alert.show(string.format("%s not found", app_name))
     end
 end
-
--- Activate cmd-T in Arc
-hs.hotkey.bind(key.hyper, "q", function()
-    activate_app_and_send_key("Arc", { "cmd" }, "t")
-end)
 
 
 ----------------------------------------------------------------------------------------------------
@@ -57,11 +52,19 @@ local function rotateKeyboarLayout()
     end
     hs.keycodes.setLayout(allLayouts[newIndex])
 end
-hs.hotkey.bind({}, key.both_shift, rotateKeyboarLayout)
 
-----------------------------------------------------------------------------------------------------
---- Window management
-local function detect_screens(primary_required, secondary_required)
+local function mute(flag)
+    local output = hs.audiodevice.defaultOutputDevice()
+    logger.df("mute: %s: %s", flag, output)
+    output:setMuted(flag)
+    if flag then
+        local input = hs.audiodevice.defaultInputDevice()
+        logger.df("mute: %s: %s", flag, input)
+        input:setMuted(flag)
+    end
+end
+
+local function detectScreens(primary_required, secondary_required)
     local laptop, primary, secondary = nil, nil, nil
     for k, v in pairs(hs.screen.allScreens()) do
         local name = v:name()
@@ -96,14 +99,68 @@ local function detect_screens(primary_required, secondary_required)
     return laptop, primary, secondary
 end
 
+
+----------------------------------------------------------------------------------------------------
+--- Location-based actions
+local function atWork()
+    mute(true)
+    local laptop, primary, secondary = detectScreens(true, true)
+
+    if laptop == nil then
+        return
+    end
+end
+
+local function atHome(laptop, screen)
+    mute(false)
+    local laptop, primary, secondary = detectScreens(true, false)
+
+    if laptop == nil then
+        return
+    end
+end
+
+local function atHomeWorking()
+    mute(false)
+    local laptop, primary, secondary = detectScreens(true, false)
+
+    if laptop == nil then
+        return
+    end
+end
+
+
+----------------------------------------------------------------------------------------------------
+--- Watch WiFi access point
+
+-- Hammerspoon might need location services permission for wifi callback to work. Uncomment the following lines to enable it.
+-- hs.location.start()
+
+local function wifiChanged(watcher, message, interface, ...)
+    if message == "SSIDChange" then
+        local ssid = hs.wifi.currentNetwork()
+        hs.alert.show("WiFi changed to: " .. (ssid or "none"))
+        if ssid == "Reden" then
+            mute(false)
+        elseif ssid == "Sepior" then
+            mute(true)
+        end
+    end
+end
+
+local wifiWatcher = hs.wifi.watcher.new(wifiChanged)
+wifiWatcher:start()
+
 local function screensChanged()
     logger.df("Screens changed")
-    local laptop, primary, secondary = detect_screens(false, false)
+    local laptop, primary, secondary = detectScreens(false, false)
     if primary ~= nil then
         if primary:name() == "LG HDR 4K" then
             logger.df("Location is home")
+            atHome()
         elseif primary:name() == "DELL U2720Q (1)" and secondary ~= nil then
             logger.df("Location is work")
+            atWork()
         else
             logger.df("Location is unknown")
         end
@@ -135,50 +192,23 @@ local function move_window_to_screen(win, screenName)
     hs.alert("Moved to " .. screenName)
 end
 
--- Example usage: move the focused window to the screen named "DELL U2720Q"
--- moveWindowToScreen("DELL U2720Q")
 
-
-hs.screen.watcher.new(screensChanged):start()
+ScreenWatcher = hs.screen.watcher.new(screensChanged)
+ScreenWatcher:start()
 screensChanged()
 
-
-local function work_layout()
-    local laptop, primary, secondary = detect_screens(true, true)
-
-    if laptop == nil then
-        return
-    end
-end
-
-local function home_layout()
-    local laptop, primary, secondary = detect_screens(true, false)
-
-    if laptop == nil then
-        return
-    end
-end
-
-local function home_work_layout()
-    local laptop, primary, secondary = detect_screens(true, false)
-
-    if laptop == nil then
-        return
-    end
-end
-
-local function identify_screens()
+local function identifyScreens()
     -- loop through all screens and print out their names
     for i, screen in ipairs(hs.screen.allScreens()) do
         hs.alert("Screen " .. i .. ": " .. screen:name(), screen)
     end
 end
 
-local function ksheet_toggle()
+local function ksheetToggle()
     spoon.KSheet:toggle()
 end
 
-local function reload_config()
+local function reloadConfig()
     hs.console.clearConsole()
     hs.openConsole()
     hs.reload()
@@ -198,13 +228,13 @@ TheTimer = hs.timer.doAfter(0.1, function()
     MyHammerspoonMenu:setTitle("🔨🥄")
     -- menubar:setIcon(hs.image.imageFromName("NSHandCursor"))
     MyHammerspoonMenu:setMenu({
-        { title = "Work Layout",        fn = work_layout },
-        { title = "Home Work Layout",   fn = home_work_layout, },
-        { title = "Home Layout",        fn = home_layout, },
+        { title = "Work Layout",        fn = atWork },
+        { title = "Home Work Layout",   fn = atHomeWorking, },
+        { title = "Home Layout",        fn = atHome, },
         { title = "-" },
-        { title = "Toggle KSheet",      fn = ksheet_toggle },
-        { title = "Reload Config",      fn = reload_config },
-        { title = "Identify Screens",   fn = identify_screens },
+        { title = "Toggle KSheet",      fn = ksheetToggle },
+        { title = "Reload Config",      fn = reloadConfig },
+        { title = "Identify Screens",   fn = identifyScreens },
         -- paste by emitting fake keyboard events. This is a workaround for pasting to (password) fields that blocks pasting.
         { title = "Paste by Keystroke", fn = function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end },
         { title = "Toggle Caps Lock",   fn = hs.hid.capslock.toggle },
@@ -219,10 +249,45 @@ hs.loadSpoon("Hammerflow")
 spoon.Hammerflow.loadFirstValidTomlFile({
     "hammerflow.toml"
 })
+
 -- optionally respect auto_reload setting in the toml config.
 if spoon.Hammerflow.auto_reload then
     hs.loadSpoon("ReloadConfiguration")
     -- set any paths for auto reload
     -- spoon.ReloadConfiguration.watch_paths = {hs.configDir, "~/path/to/my/configs/"}
     spoon.ReloadConfiguration:start()
+end
+
+--------------------------------------------------------------------------------------------------------------------
+--- Key bindings
+hs.hotkey.bind({}, key.both_shift, rotateKeyboarLayout)
+
+-- Activate Cmd-T in Arc
+hs.hotkey.bind(key.hyper, "q", function()
+    activateAppAandSsendKkey("Arc", { "cmd" }, "t")
+end)
+
+function UpdateAllSpoons()
+    local spoonDir = os.getenv("HOME") .. "/.hammerspoon/Spoons/"
+    local handle = io.popen('ls "' .. spoonDir .. '"')
+    local result = handle:read("*a")
+    handle:close()
+
+    local spoons = {}
+    for spoonFolder in result:gmatch("([^\n]+)%.spoon/?") do
+        table.insert(spoons, spoonFolder)
+    end
+
+    print("Installed Spoons:")
+    for _, name in ipairs(spoons) do
+        print("  " .. name)
+    end
+
+
+    spoon.SpoonInstall:updateAllRepos()
+    for _, name in ipairs(spoons) do
+        print("Updating " .. name)
+        spoon.SpoonInstall:installSpoonFromRepo(name)
+    end
+    print("All Spoons updated.")
 end
