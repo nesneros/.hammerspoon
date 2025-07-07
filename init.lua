@@ -103,7 +103,7 @@ end
 ----------------------------------------------------------------------------------------------------
 --- Location-based actions
 local function atWork()
-    mute(true)
+    -- mute(true)
     local laptop, primary, secondary = detectScreens(true, true)
 
     if laptop == nil then
@@ -112,7 +112,7 @@ local function atWork()
 end
 
 local function atHome(laptop, screen)
-    mute(false)
+    -- mute(false)
     local laptop, primary, secondary = detectScreens(true, false)
 
     if laptop == nil then
